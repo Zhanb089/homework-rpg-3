@@ -6,8 +6,10 @@ import com.narxoz.rpg.battle.BattleEngine;
 import com.narxoz.rpg.battle.Combatant;
 import com.narxoz.rpg.battle.EncounterResult;
 import com.narxoz.rpg.enemy.Goblin;
-import com.narxoz.rpg.hero.Mage;
-import com.narxoz.rpg.hero.Warrior;
+import com.narxoz.rpg.hero.Hero;
+import com.narxoz.rpg.herofactory.HeroFactory;
+import com.narxoz.rpg.herofactory.MageFactory;
+import com.narxoz.rpg.herofactory.WarriorFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +17,12 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=== RPG Battle Engine Demo ===");
 
-        // Создаём героев
-        Warrior warrior = new Warrior("Arthas");
-        Mage mage = new Mage("Jaina");
+        // Создаём героев через фактори
+        HeroFactory mageFactory = new MageFactory();
+        Hero mage = mageFactory.createHero("Jaina");
+
+        HeroFactory warriorFactory = new WarriorFactory();
+        Hero warrior = warriorFactory.createHero("Arthas");
 
         // Создаём врагов
         Goblin goblin1 = new Goblin();
