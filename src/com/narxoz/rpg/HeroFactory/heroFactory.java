@@ -1,7 +1,7 @@
-package com.narxoz.rpg.HeroFactory;
+package com.narxoz.rpg.herofactory;
 
 import com.narxoz.rpg.hero.Hero;
 
-public interface heroFactory {
+public interface HeroFactory {
     Hero createHero(String name);
 }
