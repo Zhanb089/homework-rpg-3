@@ -1,5 +1,6 @@
 package com.narxoz.rpg.battle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,12 +28,58 @@ public final class BattleEngine {
     }
 
     public EncounterResult runEncounter(List<Combatant> teamA, List<Combatant> teamB) {
-        // TODO: validate inputs and run round-based battle
-        // TODO: use random if you add critical hits or target selection
-        EncounterResult result = new EncounterResult();
-        result.setWinner("TBD");
-        result.setRounds(0);
-        result.addLog("TODO: implement battle simulation");
+    EncounterResult result = new EncounterResult();
+    int round = 0;
+
+    // Создаём копии списков, чтобы можно было удалять павших
+    List<Combatant> attackers = new ArrayList<>(teamA);
+    List<Combatant> defenders = new ArrayList<>(teamB);
+
+        while (!attackers.isEmpty() && !defenders.isEmpty()) {
+            round++;
+            result.addLog("=== Round " + round + " ===");
+
+            // Команда A атакует команду B
+            for (int i = 0; i < attackers.size(); i++) {
+                Combatant attacker = attackers.get(i);
+                if (!attacker.isAlive()) continue;
+                if (defenders.isEmpty()) break;
+
+                // Цель выбирается случайно
+                Combatant target = defenders.get(random.nextInt(defenders.size()));
+                int damage = attacker.getAttackPower();
+                target.takeDamage(damage);
+                result.addLog(attacker.getName() + " hits " + target.getName() + " for " + damage + " damage.");
+
+                // Проверяем, жив ли target
+                if (!target.isAlive()) {
+                    result.addLog(target.getName() + " has been defeated!");
+                    defenders.remove(target);
+                }
+            }
+
+            // Команда B атакует команду A
+            for (int i = 0; i < defenders.size(); i++) {
+                Combatant attacker = defenders.get(i);
+                if (!attacker.isAlive()) continue;
+                if (attackers.isEmpty()) break;
+
+                Combatant target = attackers.get(random.nextInt(attackers.size()));
+                int damage = attacker.getAttackPower();
+                target.takeDamage(damage);
+                result.addLog(attacker.getName() + " hits " + target.getName() + " for " + damage + " damage.");
+
+                if (!target.isAlive()) {
+                    result.addLog(target.getName() + " has been defeated!");
+                    attackers.remove(target);
+                }
+            }
+        }
+
+        result.setRounds(round);
+        if (attackers.isEmpty()) result.setWinner("Enemies");
+        else result.setWinner("Heroes");
+
         return result;
     }
 }

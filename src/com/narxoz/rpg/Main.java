@@ -8,7 +8,6 @@ import com.narxoz.rpg.battle.EncounterResult;
 import com.narxoz.rpg.enemy.Goblin;
 import com.narxoz.rpg.hero.Mage;
 import com.narxoz.rpg.hero.Warrior;
-
 import java.util.ArrayList;
 import java.util.List;
 
