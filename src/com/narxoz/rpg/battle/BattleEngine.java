@@ -31,7 +31,6 @@ public final class BattleEngine {
     EncounterResult result = new EncounterResult();
     int round = 0;
 
-    // Создаём копии списков, чтобы можно было удалять павших
     List<Combatant> attackers = new ArrayList<>(teamA);
     List<Combatant> defenders = new ArrayList<>(teamB);
 
@@ -39,31 +38,34 @@ public final class BattleEngine {
             round++;
             result.addLog("=== Round " + round + " ===");
 
-            // Команда A атакует команду B
             for (int i = 0; i < attackers.size(); i++) {
                 Combatant attacker = attackers.get(i);
-                if (!attacker.isAlive()) continue;
-                if (defenders.isEmpty()) break;
+                if (!attacker.isAlive()) {
+                    continue;
+                }
+                if (defenders.isEmpty()) {
+                    break;
+                }
 
-                // Цель выбирается случайно
                 Combatant target = defenders.get(random.nextInt(defenders.size()));
                 int damage = attacker.getAttackPower();
                 target.takeDamage(damage);
                 result.addLog(attacker.getName() + " hits " + target.getName() + " for " + damage + " damage.");
 
-                // Проверяем, жив ли target
                 if (!target.isAlive()) {
                     result.addLog(target.getName() + " has been defeated!");
                     defenders.remove(target);
                 }
             }
 
-            // Команда B атакует команду A
             for (int i = 0; i < defenders.size(); i++) {
                 Combatant attacker = defenders.get(i);
-                if (!attacker.isAlive()) continue;
-                if (attackers.isEmpty()) break;
-
+                if (!attacker.isAlive()) {
+                    continue;
+                }
+                if (attackers.isEmpty()) {
+                    break;
+                }
                 Combatant target = attackers.get(random.nextInt(attackers.size()));
                 int damage = attacker.getAttackPower();
                 target.takeDamage(damage);
@@ -77,9 +79,12 @@ public final class BattleEngine {
         }
 
         result.setRounds(round);
-        if (attackers.isEmpty()) result.setWinner("Enemies");
-        else result.setWinner("Heroes");
-
+        if (attackers.isEmpty()) {
+            result.setWinner("Enemies");
+        }
+        else {
+            result.setWinner("Heroes");
+        }
         return result;
     }
 }
