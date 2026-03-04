@@ -46,7 +46,6 @@ public class Main {
         HeroCombatantAdapter heroAdapter = new HeroCombatantAdapter(warrior);
         EnemyCombatantAdapter enemyAdapter = new EnemyCombatantAdapter(goblin);
 
-        // Проверяем Singleton BattleEngine
         BattleEngine engine = new BattleEngine();
         engine.fight(heroAdapter,enemyAdapter);
 
