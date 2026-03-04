@@ -1,90 +1,27 @@
 package com.narxoz.rpg.battle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public final class BattleEngine {
-    private static BattleEngine instance;
-    private Random random = new Random(1L);
+    public void fight(Combatant a, Combatant b) {
 
-    private BattleEngine() {
-    }
+        System.out.println("Battle: " + a.getName() + " vs " + b.getName());
+        System.out.println();
 
-    public static BattleEngine getInstance() {
-        if (instance == null) {
-            instance = new BattleEngine();
-        }
-        return instance;
-    }
+        while (a.isAlive() && b.isAlive()) {
 
-    public BattleEngine setRandomSeed(long seed) {
-        this.random = new Random(seed);
-        return this;
-    }
+            b.takeDamage(a.attack());
+            System.out.println(a.getName() + " hits " + b.getName()
+                    + " | " + b.getName() + " HP: " + b.getHealth());
 
-    public void reset() {
-        // TODO: reset any battle state if you add it
-    }
+            if (!b.isAlive()) break;
 
-    public EncounterResult runEncounter(List<Combatant> teamA, List<Combatant> teamB) {
-    EncounterResult result = new EncounterResult();
-    int round = 0;
+            a.takeDamage(b.attack());
+            System.out.println(b.getName() + " hits " + a.getName()
+                    + " | " + a.getName() + " HP: " + a.getHealth());
 
-    List<Combatant> attackers = new ArrayList<>(teamA);
-    List<Combatant> defenders = new ArrayList<>(teamB);
-
-        while (!attackers.isEmpty() && !defenders.isEmpty()) {
-            round++;
-            result.addLog("=== Round " + round + " ===");
-
-            for (int i = 0; i < attackers.size(); i++) {
-                Combatant attacker = attackers.get(i);
-                if (!attacker.isAlive()) {
-                    continue;
-                }
-                if (defenders.isEmpty()) {
-                    break;
-                }
-
-                Combatant target = defenders.get(random.nextInt(defenders.size()));
-                int damage = attacker.getAttackPower();
-                target.takeDamage(damage);
-                result.addLog(attacker.getName() + " hits " + target.getName() + " for " + damage + " damage.");
-
-                if (!target.isAlive()) {
-                    result.addLog(target.getName() + " has been defeated!");
-                    defenders.remove(target);
-                }
-            }
-
-            for (int i = 0; i < defenders.size(); i++) {
-                Combatant attacker = defenders.get(i);
-                if (!attacker.isAlive()) {
-                    continue;
-                }
-                if (attackers.isEmpty()) {
-                    break;
-                }
-                Combatant target = attackers.get(random.nextInt(attackers.size()));
-                int damage = attacker.getAttackPower();
-                target.takeDamage(damage);
-                result.addLog(attacker.getName() + " hits " + target.getName() + " for " + damage + " damage.");
-
-                if (!target.isAlive()) {
-                    result.addLog(target.getName() + " has been defeated!");
-                    attackers.remove(target);
-                }
-            }
+            System.out.println();
         }
 
-        result.setRounds(round);
-        if (attackers.isEmpty()) {
-            result.setWinner("Enemies");
-        }
-        else {
-            result.setWinner("Heroes");
-        }
-        return result;
+        System.out.println("Winner: " +
+                (a.isAlive() ? a.getName() : b.getName()));
     }
 }

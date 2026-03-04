@@ -8,8 +8,8 @@ public class Warrior implements Hero {
     public Warrior(String name) {
         this.name = name;
         // TODO: tune stats if needed
-        this.power = 20;
-        this.health = 120;
+        this.power = 120;
+        this.health = 180;
     }
 
     @Override
@@ -36,6 +36,7 @@ public class Warrior implements Hero {
         return health > 0;
     }
 
+    @Override
     public int getHealth() {
         return health;
     }

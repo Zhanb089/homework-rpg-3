@@ -3,19 +3,24 @@ package com.narxoz.rpg;
 import com.narxoz.rpg.adapter.EnemyCombatantAdapter;
 import com.narxoz.rpg.adapter.HeroCombatantAdapter;
 import com.narxoz.rpg.battle.BattleEngine;
-import com.narxoz.rpg.battle.Combatant;
-import com.narxoz.rpg.battle.EncounterResult;
-import com.narxoz.rpg.enemy.Goblin;
+import com.narxoz.rpg.builder.BasicEnemyBuilder;
+import com.narxoz.rpg.combat.Ability;
+import com.narxoz.rpg.component.IceComponentFactory;
+import com.narxoz.rpg.enemy.Enemy;
 import com.narxoz.rpg.hero.Hero;
 import com.narxoz.rpg.herofactory.HeroFactory;
 import com.narxoz.rpg.herofactory.MageFactory;
 import com.narxoz.rpg.herofactory.WarriorFactory;
-import java.util.ArrayList;
+import com.narxoz.rpg.loot.LootTable;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("=== RPG Battle Engine Demo ===");
+
+        IceComponentFactory iceFactory = new IceComponentFactory();
+        List<Ability> iceAbilities = iceFactory.createAbilities();
+        LootTable iceLoot = iceFactory.createLootTable();
 
         // Создаём героев через фактори
         HeroFactory mageFactory = new MageFactory();
@@ -25,38 +30,25 @@ public class Main {
         Hero warrior = warriorFactory.createHero("Arthas");
 
         // Создаём врагов
-        Goblin goblin1 = new Goblin();
-        Goblin goblin2 = new Goblin();
+        Enemy goblin = new BasicEnemyBuilder()
+                .setName("Forest Goblin")
+                .setHealth(200)
+                .setDamage(50)
+                .addAbility(iceAbilities.get(0))
+                .setLootTable(iceLoot)
+                .setAI("Cautious")
+                .build();
 
-        // Оборачиваем в Adapter
-        List<Combatant> heroes = new ArrayList<>();
-        heroes.add(new HeroCombatantAdapter(warrior));
-        heroes.add(new HeroCombatantAdapter(mage));
+        Enemy goblinClone = goblin.clone();
+        goblinClone.setName("Goblin Raider");
+        goblinClone.multiplyStats(1.5);
 
-        List<Combatant> enemies = new ArrayList<>();
-        enemies.add(new EnemyCombatantAdapter(goblin1));
-        enemies.add(new EnemyCombatantAdapter(goblin2));
+        HeroCombatantAdapter heroAdapter = new HeroCombatantAdapter(warrior);
+        EnemyCombatantAdapter enemyAdapter = new EnemyCombatantAdapter(goblin);
 
         // Проверяем Singleton BattleEngine
-        BattleEngine engineA = BattleEngine.getInstance();
-        BattleEngine engineB = BattleEngine.getInstance();
-        System.out.println("Same BattleEngine instance? " + (engineA == engineB));
-        System.out.println();
-
-        // Устанавливаем фиксированное семя для предсказуемости
-        engineA.setRandomSeed(42L);
-
-        // Запускаем битву
-        EncounterResult result = engineA.runEncounter(heroes, enemies);
-
-        // Вывод результатов
-        System.out.println("=== Battle Summary ===");
-        System.out.println("Winner: " + result.getWinner());
-        System.out.println("Rounds: " + result.getRounds());
-        System.out.println("Battle Log:");
-        for (String line : result.getBattleLog()) {
-            System.out.println(line);
-        }
+        BattleEngine engine = new BattleEngine();
+        engine.fight(heroAdapter,enemyAdapter);
 
         System.out.println("=== Demo Complete ===");
     }

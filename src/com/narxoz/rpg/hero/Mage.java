@@ -35,7 +35,7 @@ public class Mage implements Hero {
     public boolean isAlive() {
         return health > 0;
     }
-
+    @Override
     public int getHealth() {
         return health;
     }
