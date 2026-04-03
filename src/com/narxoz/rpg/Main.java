@@ -46,8 +46,8 @@ public class Main {
         HeroCombatantAdapter heroAdapter = new HeroCombatantAdapter(warrior);
         EnemyCombatantAdapter enemyAdapter = new EnemyCombatantAdapter(goblin);
 
-        BattleEngine engine = new BattleEngine();
-        engine.fight(heroAdapter,enemyAdapter);
+        BattleEngine engine = BattleEngine.getInstance(); 
+        engine.fight(heroAdapter, enemyAdapter);
 
         System.out.println("=== Demo Complete ===");
     }

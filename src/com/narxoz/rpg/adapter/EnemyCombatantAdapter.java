@@ -26,6 +26,9 @@ public class EnemyCombatantAdapter implements Combatant {
     @Override
     public void takeDamage(int damage) {
         currentHealth -= damage;
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
     }
 
     @Override
